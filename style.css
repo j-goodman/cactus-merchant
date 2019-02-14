@@ -1,0 +1,86 @@
+body {
+    align-items: center;
+    background: #ec8;
+    color: #663;
+    display: flex;
+    flex-direction: row;
+    font-family: 'Lato', sans-serif;
+    justify-content: center;
+    padding-top: 3%;
+}
+
+canvas, .side-bar {
+    background: #663;
+}
+
+canvas {
+    height: 500px;
+    width: 500px;
+}
+
+.hidden {
+    display: none;
+}
+
+.title {
+    font-family: 'Staatliches', sans-serif;
+    font-size: 1.5em;
+}
+
+.side-bar {
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    justify-content: flex-start;
+    margin-left: 15px;
+    width: 300px;
+}
+
+.object {
+    background: #ec8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 4px;
+    padding-bottom: 4px;
+    width: 100%;
+}
+
+.label {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    padding: 4px;
+}
+
+.label > img {
+    height: 30px;
+    margin-right: 10px;
+    width: auto;
+}
+
+.inventory-item {
+    height: 30px;
+    margin: 2px;
+    width: auto;
+}
+
+.button {
+    background: #663;
+    color: #ec8;
+    cursor: pointer;
+    margin: 4px;
+    padding: 4px 8px 4px 8px;
+    transition: transform .1s;
+    transform: translateY(0);
+}
+
+.button:hover {
+    transform: translateY(1px);
+}
+
+/*
+dark: #663
+mid: #c93
+light: #ec8
+*/

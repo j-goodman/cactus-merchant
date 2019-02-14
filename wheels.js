@@ -1,0 +1,35 @@
+let wheels = {}
+
+wheels.inherits = function (ChildClass, BaseClass) {
+    function Surrogate() { this.constructor = ChildClass }
+    Surrogate.prototype = BaseClass.prototype
+    ChildClass.prototype = new Surrogate()
+};
+
+wheels.spectrum = (place, first, second) => {
+    // If place = 0, return first, if place = 1, return second,
+    // if place = .5 return the mean of the two, etc.
+    return (first * (1 - place)) + (second * place)
+}
+
+wheels.distanceBetween = (first, second) => {
+    let a = first.x - second.x
+    let b = first.y - second.y
+    return Math.sqrt(a * a + b * b)
+}
+
+wheels.random = list => {
+    if (Array.isArray(list)) {
+        return list[Math.floor(Math.random() * list.length)]
+    } else if (Object.keys(list)) {
+        return list[random(Object.keys(list))]
+    }
+}
+
+wheels.floor = (val, floor) => {
+    return val > floor ? val : floor
+}
+
+wheels.ceiling = (val, ceiling) => {
+    return val < ceiling ? val : ceiling
+}
