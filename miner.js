@@ -1,38 +1,133 @@
 let Miner = function (x, y) {
     this.instantiate(x, y)
     this.name = nameMumbler.mumble()
-    this.icon = game.icons.miner
-    this.head = {}
+    this.icon = wheels.random([true, false]) ? game.icons.miner : game.icons['miner-b']
+    this.head = {task: 'surveying', nearestRock: null}
     this.inventory = []
     this.inventory.length = 8
     this.inventory.fill(null)
-    this.info = `A miner named ${this.name}. These craftsmen and traders make their living breaking up desert rocks hoping to find treasures inside.`
+    this.info = `A miner named ${this.name}. Miners make their living breaking up desert rocks hoping to find treasures inside.`
     this.interval = setInterval(this.act.bind(this), 500)
 }
-wheels.inherits(Miner, Entity)
+wheels.inherits(Miner, Person)
 
 Miner.prototype.act = function () {
-    if (!Math.floor(Math.random() * 4)) {
-        this.moveRandomly()
+    if (this.head.task === 'traveling' && wheels.random([true, false, true])) {
+        this.moveOnBearing()
+        if (wheels.random([1, 0, 0, 0, 0, 0, 0])) {
+            this.head.task = 'surveying'
+        }
     }
+    if (this.head.task === 'surveying') {
+        let counts = this.survey()
+        let oldBearing = this.head.bearing
+        this.head.bearing = wheels.random(['north-east', 'north-west', 'south-east', 'south-west'])
+        let choice = 'traveling'
+        if (!this.head.highestEverRockCount || this.head.highestEverRockCount < counts.rock || (counts.rock > 0 && wheels.random([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))) {
+            this.head.highestEverRockCount = counts.rock
+            choice = 'mining'
+        }
+        if (!this.head.lowestEverRockCount || this.head.lowestEverRockCount > counts.rock) {
+            this.head.lowestEverRockCount = counts.rock
+            while (this.head.bearing === oldBearing) {
+                this.head.bearing = wheels.random(['north-east', 'north-west', 'south-east', 'south-west'])
+            }
+        }
+        this.head.task = choice
+    }
+    if (this.head.task === 'mining') {
+        let adjacents = this.getAdjacents()
+        if (adjacents.map(ob => { return ob.name }).includes('rock')) {
+            let rock = adjacents.filter(ob => {
+                return ob.name === 'rock'
+            })[0]
+            rock.mine(this)
+        } else {
+            if (!this.head.nearestRock || !this.head.nearestRock.pos || !game.grid[this.head.nearestRock.pos.x][this.head.nearestRock.pos.y].entity) {
+                this.survey()
+                if (!this.head.nearestRock || !this.head.nearestRock.pos || wheels.random([1, 0, 0, 0, 0, 0])) {
+                    this.head.task = 'traveling'
+                }
+            } else if (wheels.random([true, false])) {
+                if (this.head.nearestRock.pos.x > this.pos.x) {
+                    this.move(1, 0)
+                } else {
+                    this.move(-1, 0)
+                }
+            } else {
+                if (this.head.nearestRock.pos.y > this.pos.y) {
+                    this.move(0, 1)
+                } else {
+                    this.move(0, -1)
+                }
+            }
+        }
+    }
+    this.head.justBumped = false
 }
 
 Miner.prototype.moveRandomly = function () {
-    let directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]
+    let directions = {
+        east: [1, 0],
+        south: [0, 1],
+        west: [-1, 0],
+        north: [0, -1]
+    }
     let direction = wheels.random(directions)
     this.move(direction[0], direction[1])
 }
 
+Miner.prototype.moveOnBearing = function () {
+    let directions = {
+        east: [1, 0],
+        south: [0, 1],
+        west: [-1, 0],
+        north: [0, -1]
+    }
+    let direction = 'x'
+    if (!this.head.bearing) {
+        this.head.task = 'surveying'
+    } else {
+        while (!this.head.bearing.includes(direction)) {
+            direction = wheels.random(['north', 'south', 'east', 'west'])
+        }
+        this.move(directions[direction][0], directions[direction][1])
+    }
+}
+
 Miner.prototype.survey = function () {
+    let counts = {}
     let i = -6
     while (i <= 6) {
         let j = -6
         while (j <= 6) {
-            if (game.grid[i][j].entity) {
-                console.log(game.grid[i][j].entity.name)
+            let x = i + this.pos.x
+            let y = j + this.pos.y
+            if (game.grid[x][y].entity) {
+                let name = game.grid[x][y].entity.name
+                counts[name] = counts[name] ? counts[name] : 0
+                counts[name] += 1
+                if (name === 'rock') {
+                    if (
+                        !this.head.nearestRock ||
+                        !this.head.nearestRock.pos ||
+                        wheels.distanceBetween(this.pos, this.head.nearestRock.pos) >
+                        wheels.distanceBetween(this.pos, game.grid[x][y].entity.pos)
+                    ) {
+                        this.head.nearestRock = game.grid[x][y].entity
+                    }
+                }
             }
             j++
         }
         i++
+    }
+    return counts
+}
+
+Miner.prototype.bump = function () {
+    if (!this.head.justBumped) {
+        this.moveRandomly()
+        this.head.justBumped = true
     }
 }

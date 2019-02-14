@@ -18,8 +18,14 @@ window.addEventListener('load', () => {
     game.icons.cactus = document.getElementById('cactus')
     game.icons.rock = document.getElementById('rock')
     game.icons.key = document.getElementById('key')
+    game.icons.gem = document.getElementById('gem')
+    game.icons.ore = document.getElementById('ore')
     game.icons.fruit = document.getElementById('fruit')
     game.icons.miner = document.getElementById('miner')
+    game.icons['miner-b'] = document.getElementById('miner-b')
+    game.icons.trader = document.getElementById('trader')
+    game.icons.windshrine = document.getElementById('windshrine')
+    game.icons.skull = document.getElementById('skull')
 
     // Instantiate world
     game.worldbuilder.scatter(
@@ -36,13 +42,56 @@ window.addEventListener('load', () => {
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
+    game.worldbuilder.scatter(
+        Rock,
+        100, // radius
+        3, // rareness
+        (Math.floor(Math.random() * 70) + 40) * (wheels.random([1, -1])), // x
+        (Math.floor(Math.random() * 70) + 40) * (wheels.random([1, -1])), // y
+    )
+    game.worldbuilder.scatter(
+        Cactus,
+        50, // radius
+        16, // rareness
+        (Math.floor(Math.random() * 70) + 80) * (wheels.random([1, -1])), // x
+        (Math.floor(Math.random() * 70) + 80) * (wheels.random([1, -1])), // y
+    )
     new Key (
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
-    window.miner = new Miner (
-        Math.floor(Math.random() * 12) - 6, // x
-        Math.floor(Math.random() * 12) - 6, // y
+    new Gem (
+        Math.floor(Math.random() * 120) - 60, // x
+        Math.floor(Math.random() * 120) - 60, // y
+    )
+    new Ore (
+        Math.floor(Math.random() * 120) - 60, // x
+        Math.floor(Math.random() * 120) - 60, // y
+    )
+    game.worldbuilder.scatter(
+        Miner,
+        200, // radius
+        1400, // rareness
+        Math.floor(Math.random() * 120) - 60, // x
+        Math.floor(Math.random() * 120) - 60, // y
+    )
+    game.worldbuilder.scatter(
+        Windshrine,
+        200, // radius
+        3000, // rareness
+        Math.floor(Math.random() * 120) - 60, // x
+        Math.floor(Math.random() * 120) - 60, // y
+    )
+    game.worldbuilder.scatter(
+        Skull,
+        200, // radius
+        900, // rareness
+        Math.floor(Math.random() * 120) - 60, // x
+        Math.floor(Math.random() * 120) - 60, // y
+    )
+    game.trader = new Trader (
+        Math.floor(Math.random() * 70) - 45, // x
+        Math.floor(Math.random() * 70) - 45, // y
     )
     game.player = new CactusMerchant (0, 0)
     game.player.name = 'player'
@@ -116,6 +165,14 @@ let Rock = function (x, y) {
 }
 wheels.inherits(Rock, Entity)
 
+let Windshrine = function (x, y) {
+    this.instantiate(x, y)
+    this.icon = game.icons.windshrine
+    this.name = 'wind shrine'
+    this.info = `It's some kind of abandoned shrine.`
+}
+wheels.inherits(Windshrine, Entity)
+
 let Key = function (x, y) {
     this.instantiate(x, y)
     this.name = 'key'
@@ -125,6 +182,36 @@ let Key = function (x, y) {
     this.verbs = ['get']
 }
 wheels.inherits(Key, Item)
+
+let Gem = function (x, y) {
+    this.instantiate(x, y)
+    this.name = 'gem'
+    this.icon = game.icons.gem
+    this.info = `It's a glimmering gemstone.`
+    this.walkover = 'get'
+    this.verbs = ['get']
+}
+wheels.inherits(Gem, Item)
+
+let Ore = function (x, y) {
+    this.instantiate(x, y)
+    this.name = 'ore'
+    this.icon = game.icons.ore
+    this.info = `It's a lump of raw iron ore.`
+    this.walkover = null
+    this.verbs = ['get']
+}
+wheels.inherits(Ore, Item)
+
+let Skull = function (x, y) {
+    this.instantiate(x, y)
+    this.name = 'skull'
+    this.icon = game.icons.skull
+    this.info = `A human's skull.`
+    this.walkover = null
+    this.verbs = ['get']
+}
+wheels.inherits(Skull, Item)
 
 let Fruit = function (x, y) {
     this.instantiate(x, y)
@@ -177,8 +264,31 @@ Person.prototype.addToInventory = function (item) {
             added = true
         }
     })
-    console.log(added)
     return added
+}
+
+Person.prototype.drop = function (index) {
+    let dropped = false
+    let nums = [1, 0, -1]
+    nums.forEach(i => {
+        nums.forEach (j => {
+            let y = this.pos.y + i
+            let x = this.pos.x + j
+            if ((i || j) && !(i && j) && !game.grid[x][y].entity && !dropped) {
+                game.grid[x][y].entity = this.inventory[index]
+                this.inventory[index].pos = {
+                    y: y,
+                    x: x
+                }
+                this.inventory[index] = null
+                dropped = true
+            }
+        })
+    })
+    game.drawGrid(game.player.pos)
+    if (this === game.player) {
+        game.updateSidebar()
+    }
 }
 
 game.worldbuilder.scatter = (Object, radius, rareness, x, y) => {
@@ -240,6 +350,9 @@ Entity.prototype.move = function (xMove, yMove) {
         if (entity.walkover) {
             entity[entity.walkover](this)
         }
+        if (this.bump) {
+            this.bump()
+        }
     } else {
         game.grid[x][y].entity = null
         game.grid[x + dir.x][y + dir.y].entity = this
@@ -265,6 +378,21 @@ Cactus.prototype.harvest = function (person) {
     game.updateSidebar()
 }
 
+Rock.prototype.mine = function (person) {
+    if (wheels.random([1, 0, 0, 0, 0, 0, 0])) {
+        let prize = new (wheels.random([true, true, true, false]) ? Ore : Gem) (this.pos.x, this.pos.y)
+        if (person.addToInventory(prize)) {
+            game.grid[this.pos.x][this.pos.y].entity = null
+            this.pos = null
+            prize.pos = null
+        }
+        game.drawGrid(game.player.pos)
+        if (person === game.player) {
+            game.updateSidebar()
+        }
+    }
+}
+
 Item.prototype.get = function (person) {
     if (person.addToInventory(this)) {
         game.grid[this.pos.x][this.pos.y].entity = null
@@ -274,12 +402,27 @@ Item.prototype.get = function (person) {
     }
 }
 
+Person.prototype.getAdjacents = function () {
+    let adjacents = []
+    let nums = [-1, 0, 1]
+    nums.forEach(i => {
+        nums.forEach (j => {
+            let x = this.pos.x + i
+            let y = this.pos.y + j
+            if ((i || j) && !(i && j) && game.grid[x][y].entity) {
+                adjacents.push(game.grid[x][y].entity)
+            }
+        })
+    })
+    return adjacents
+}
+
 game.updateSidebar = () => {
     let inventory = document.getElementById('inventory')
     Array.from(inventory.childNodes).forEach(child => {
         inventory.removeChild(child)
     })
-    game.player.inventory.forEach(item => {
+    game.player.inventory.forEach((item, index) => {
         if (!item) {
             let slot = document.createElement('img')
             slot.src = 'icons/square.png'
@@ -288,21 +431,14 @@ game.updateSidebar = () => {
         } else {
             let icon = document.createElement('img')
             icon.src = item.icon.src
-            icon.className = 'inventory-item'
+            icon.className = 'inventory-item cursor'
+            icon.addEventListener('click', () => {
+                game.player.drop(index)
+            })
             inventory.appendChild(icon)
         }
     })
-    let adjacents = []
-    let nums = [-1, 0, 1]
-    nums.forEach(i => {
-        nums.forEach (j => {
-            let x = game.player.pos.x + i
-            let y = game.player.pos.y + j
-            if ((i || j) && !(i && j) && game.grid[x][y].entity) {
-                adjacents.push(game.grid[x][y].entity)
-            }
-        })
-    })
+    let adjacents = game.player.getAdjacents()
     Array.from(sidebar.childNodes).forEach((child, index) => {
         if (index > 1) {
             sidebar.removeChild(child)

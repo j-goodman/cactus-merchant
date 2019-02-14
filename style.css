@@ -65,6 +65,10 @@ canvas {
     width: auto;
 }
 
+.cursor {
+    cursor: hover;
+}
+
 .button {
     background: #663;
     color: #ec8;

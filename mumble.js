@@ -121,7 +121,7 @@ var nameMumbler = new Talker (2);
 nameMumbler.names = ['Arturo', 'Malinche', 'Joseph', 'Annabel', 'Mikey', 'Abdi', 'Gaff', 'Olivia',
 										 'Farida', 'Santiago', 'Daniel', 'Valencia', 'Krishna', 'Louisa', 'Mohamed',
 									   'Nikau', 'Petra', 'Richard', 'Lazarus', 'Jack', 'Otis', 'William', 'Deshawn',
-                     'Lou', 'Don', 'Mark', 'Kip', 'Ip', 'Ed', 'Bill', 'Ted', 'Wu', 'Lara', 'Knee',
+                     'Lou', 'Don', 'Mark', 'Kip', 'Hib', 'Ed', 'Bill', 'Ted', 'Shu', 'Lara', 'Knee',
                      'Nibs', 'Danny', 'Bobby', 'Abby', 'Lee', 'Oppie', 'Axe', 'Ana', 'Anna']
 nameMumbler.names.map((item) => {
   nameMumbler.read(item)
