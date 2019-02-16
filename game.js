@@ -135,7 +135,7 @@ let CactusMerchant = function (x, y) {
     this.inventory.length = 8
     this.inventory.fill(null)
     this.money = Math.floor(Math.random() * 7) + 2
-    this.speed = 10
+    this.speed = 8
 }
 wheels.inherits(CactusMerchant, Person)
 
@@ -528,8 +528,10 @@ Person.prototype.trade = function (partner) {
         shelf.className = 'trading-shelf'
         shelf.id = 'trading-shelf'
         let buyshelf = document.createElement('div')
+        buyshelf.className = 'buy-shelf'
         buyshelf.innerText = 'buy:'
         let sellshelf = document.createElement('div')
+        sellshelf.className = 'sell-shelf'
         sellshelf.innerText = 'sell:'
 
         let addToShelf = (item, index, shelf, buying) => {
@@ -537,6 +539,11 @@ Person.prototype.trade = function (partner) {
                 let button = document.createElement('div')
                 let icon = document.createElement('img')
                 let price = (item.value || item.value === 0) ? item.value : 1
+                if (this.values[item.name]) {
+                    price = Math.ceil(price * (this.values[item.name] - (buying ? 0 : .125)))
+                } else {
+                    price = Math.ceil(price / 2)
+                }
                 let valid = (buying ? partner : this).money >= price
                 if ((!buying && this.inventoryIsFull()) || (buying && partner.inventoryIsFull())) {
                     valid = false
@@ -548,17 +555,22 @@ Person.prototype.trade = function (partner) {
                 button.appendChild(icon)
                 shelf.appendChild(button)
                 if (valid) {
+                    this.values[item.name] = this.values[item.name] ? this.values[item.name] : .5
                     button.addEventListener('click', () => {
                         if (buying) {
                             partner.money -= price
                             this.money += price
                             partner.addToInventory(item)
                             this.inventory[index] = null
+                            this.values[item.name] += .1
+                            this.values[item.name] = wheels.ceiling(this.values[item.name], 7)
                         } else {
                             this.money -= price
                             partner.money += price
                             this.addToInventory(item)
                             partner.inventory[index] = null
+                            this.values[item.name] -= .1
+                            this.values[item.name] = wheels.floor(this.values[item.name], .1)
                         }
                         game.drawGrid(game.player.pos)
                         game.updateSidebar()

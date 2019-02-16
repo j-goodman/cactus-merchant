@@ -10,6 +10,10 @@ let Miner = function (x, y) {
     this.money = Math.floor(Math.random() * 7) + 2
     this.interval = setInterval(this.act.bind(this), 500)
     this.verbs = ['trade']
+    this.values = {
+        'fruit': Math.random() * 3.2,
+        'poison root': Math.random() * 2.4,
+    }
 }
 wheels.inherits(Miner, Person)
 

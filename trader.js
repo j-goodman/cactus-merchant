@@ -12,6 +12,12 @@ let Trader = function (x, y) {
     this.interval = setInterval(this.act.bind(this), 500)
     this.money = Math.floor(Math.random() * 150) + 150
     this.verbs = ['trade']
+    this.values = {
+        'fruit': .35 + Math.random() * .35 + Math.random() * .35 + Math.random() * .35,
+        'gem': Math.random() * 2.5 + .5,
+        'skull': Math.random() * 2,
+        'poison root': 1.6,
+    }
 }
 wheels.inherits(Trader, Person)
 

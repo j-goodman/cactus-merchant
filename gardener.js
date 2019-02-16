@@ -17,6 +17,9 @@ let Gardener = function (x, y) {
     this.money = Math.floor(Math.random() * 70) + 20
     this.verbs = ['trade']
     this.interval = setInterval(this.act.bind(this), 500)
+    this.values = {
+        'cactus seed': Math.random() * 2 + .5
+    }
 }
 wheels.inherits(Gardener, Person)
 

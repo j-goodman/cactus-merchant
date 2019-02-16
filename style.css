@@ -128,6 +128,14 @@ canvas {
     left: 0px;
 }
 
+.buy-shelf > div {
+    background: #944724;
+}
+
+.sell-shelf > div {
+    background: #474771;
+}
+
 /*
 dark: #663
 mid: #c93
