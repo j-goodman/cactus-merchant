@@ -462,10 +462,7 @@ Cactusseed.prototype.drop = function (person) {
             let cactus = new (wet ? Cactus : Shriveledcactus) (this.pos.x, this.pos.y)
             game.grid[this.pos.x][this.pos.y].entity = cactus
             this.pos = null
-            if (person === game.player) {
-                game.drawGrid(game.player.pos)
-                game.updateSidebar()
-            }
+            game.drawGrid(game.player.pos)
         } else {
             setTimeout(sprout, 5000)
         }
@@ -518,7 +515,7 @@ Person.prototype.trade = function (partner) {
     if (partner === game.player) {
         let objects = Array.from(document.getElementsByClassName('object'))
         let characterPage = objects.filter(ob => {
-            return ob.getElementsByClassName('label')[0].innerText === this.name
+            return ob.getElementsByClassName('label')[0].getElementsByClassName('title')[0].innerText === this.name
         })[0]
         let shelf = document.getElementById('trading-shelf')
         if (shelf) {
@@ -632,15 +629,21 @@ game.updateSidebar = () => {
         let object = document.createElement('div')
         let label = document.createElement('div')
         let name = document.createElement('div')
+        let networth = document.createElement('div')
         let icon = document.createElement('img')
 
         object.className = 'object'
         label.className = 'label'
         name.className = 'title'
         name.innerText = ent.name
+        networth.className = 'net-worth'
         icon.src = ent.icon.src
         label.appendChild(icon)
         label.appendChild(name)
+        if (ent.money) {
+            networth.innerText = `${ent.money}₹`
+            label.appendChild(networth)
+        }
         object.appendChild(label)
 
         let button = document.createElement('div')
