@@ -1,7 +1,7 @@
 let Miner = function (x, y) {
     this.instantiate(x, y)
     this.name = nameMumbler.mumble()
-    this.icon = wheels.random([true, false]) ? game.icons.miner : game.icons['miner-b']
+    this.icon = /*wheels.random([false, false, false, true]) ? game.icons.minerb :*/ game.icons.miner
     this.head = {task: 'surveying', nearestRock: null}
     this.inventory = []
     this.inventory.length = 8
@@ -14,7 +14,7 @@ wheels.inherits(Miner, Person)
 Miner.prototype.act = function () {
     if (this.head.task === 'traveling' && wheels.random([true, false, true])) {
         this.moveOnBearing()
-        if (wheels.random([1, 0, 0, 0, 0, 0, 0])) {
+        if (wheels.random([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,])) {
             this.head.task = 'surveying'
         }
     }
