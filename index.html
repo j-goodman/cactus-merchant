@@ -5,25 +5,37 @@
         <title>Cactus Merchant</title>
         <link rel='stylesheet' href='style.css'>
         <link href="https://fonts.googleapis.com/css?family=Lato|Staatliches" rel="stylesheet">
+        <!--Modules-->
         <script src='wheels.js'></script>
+        <script src='mumble.js'></script>
+        <!--Game Logic-->
+        <script src='icon-loader.js'></script>
         <script src='game.js'></script>
+        <!--Characters-->
         <script src='miner.js'></script>
         <script src='trader.js'></script>
-        <script src='mumble.js'></script>
+        <script src='gardener.js'></script>
     </head>
     <body>
-        <img src='icons/merchant.png' id='merchant' class='hidden'>
+
         <img src='icons/cactus.png' id='cactus' class='hidden'>
-        <img src='icons/rock.png' id='rock' class='hidden'>
-        <img src='icons/key.png' id='key' class='hidden'>
-        <img src='icons/gem.png' id='gem' class='hidden'>
-        <img src='icons/ore.png' id='ore' class='hidden'>
+        <img src='icons/cactusseed.png' id='cactusseed' class='hidden'>
         <img src='icons/fruit.png' id='fruit' class='hidden'>
+        <img src='icons/gem.png' id='gem' class='hidden'>
+        <img src='icons/herbseller.png' id='herbseller' class='hidden'>
+        <img src='icons/key.png' id='key' class='hidden'>
+        <img src='icons/merchant.png' id='merchant' class='hidden'>
         <img src='icons/miner.png' id='miner' class='hidden'>
         <img src='icons/miner-b.png' id='miner-b' class='hidden'>
-        <img src='icons/trader.png' id='trader' class='hidden'>
-        <img src='icons/windshrine.png' id='windshrine' class='hidden'>
+        <img src='icons/ore.png' id='ore' class='hidden'>
+        <img src='icons/poisonroot.png' id='poisonroot' class='hidden'>
+        <img src='icons/rock.png' id='rock' class='hidden'>
         <img src='icons/skull.png' id='skull' class='hidden'>
+        <img src='icons/shriveledcactus.png' id='shriveledcactus' class='hidden'>
+        <img src='icons/trader.png' id='trader' class='hidden'>
+        <img src='icons/warlock.png' id='warlock' class='hidden'>
+        <img src='icons/windshrine.png' id='windshrine' class='hidden'>
+
         <canvas id='canvas' width='1100' height='1100'></canvas>
         <div class='side-bar' id='sidebar'>
             <div class='player'>
@@ -31,6 +43,13 @@
                       <div class='label'>
                           <img src='icons/merchant.png'>
                           <div class='title'>Cactus Merchant</div>
+                      </div>
+                      <div class='label'>
+                          <div class='net-worth' id='net-worth'></div>
+                          <div class='compass label' id='compass'>
+                              <img src='icons/compass.png' alt='compass'>
+                              <img id='needle' src='icons/needle.png' alt='needle'>
+                          </div>
                       </div>
                       <div class='inventory' id='inventory'></div>
                 </div>

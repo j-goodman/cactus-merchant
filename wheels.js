@@ -33,3 +33,7 @@ wheels.floor = (val, floor) => {
 wheels.ceiling = (val, ceiling) => {
     return val < ceiling ? val : ceiling
 }
+
+wheels.angleBetween = (first, second) => {
+    return Math.atan2(second.y - first.y, second.x - first.x) * 180 / Math.PI
+}

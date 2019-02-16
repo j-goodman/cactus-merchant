@@ -27,6 +27,11 @@ canvas {
     font-size: 1.5em;
 }
 
+.net-worth {
+    font-family: 'Staatliches', sans-serif;
+    margin-left: 10px;
+}
+
 .side-bar {
     display: flex;
     flex-direction: column;
@@ -66,7 +71,7 @@ canvas {
 }
 
 .cursor {
-    cursor: hover;
+    cursor: pointer;
 }
 
 .button {
@@ -79,8 +84,48 @@ canvas {
     transform: translateY(0);
 }
 
+.invalid-button {
+    background: #663;
+    color: #ec8;
+    margin: 4px;
+    opacity: .4;
+    padding: 4px 8px 4px 8px;
+}
+
+.trading-shelf > div {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.trading-button {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    font-size: .75em;
+    margin: 2px;
+    padding: 1px 1px 1px 8px;
+}
+
+.trading-icon {
+    height: 40px;
+    margin: 0px;
+    padding: 0px;
+    width: auto
+}
+
 .button:hover {
     transform: translateY(1px);
+}
+
+.compass {
+    position: relative;
+}
+
+.compass > img {
+    position: absolute;
+    left: 0px;
 }
 
 /*

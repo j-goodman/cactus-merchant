@@ -7,7 +7,9 @@ let Miner = function (x, y) {
     this.inventory.length = 8
     this.inventory.fill(null)
     this.info = `A miner named ${this.name}. Miners make their living breaking up desert rocks hoping to find treasures inside.`
+    this.money = Math.floor(Math.random() * 7) + 2
     this.interval = setInterval(this.act.bind(this), 500)
+    this.verbs = ['trade']
 }
 wheels.inherits(Miner, Person)
 
