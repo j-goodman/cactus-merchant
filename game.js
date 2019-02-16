@@ -11,22 +11,7 @@ game.worldbuilder.clear = (x, y) => {
 game.icons = {}
 game.intervals = []
 
-window.addEventListener('load', () => {
-    // Load canvas and images
-    game.canvas = document.getElementById('canvas')
-    game.ctx = game.canvas.getContext('2d')
-    game.icons.cactus = document.getElementById('cactus')
-    game.icons.rock = document.getElementById('rock')
-    game.icons.key = document.getElementById('key')
-    game.icons.gem = document.getElementById('gem')
-    game.icons.ore = document.getElementById('ore')
-    game.icons.fruit = document.getElementById('fruit')
-    game.icons.miner = document.getElementById('miner')
-    game.icons.minerb = document.getElementById('miner-b')
-    game.icons.trader = document.getElementById('trader')
-    game.icons.windshrine = document.getElementById('windshrine')
-    game.icons.skull = document.getElementById('skull')
-
+let instantiateWorld = () => {
     // Instantiate world
     game.worldbuilder.scatter(
         Cactus,
@@ -60,14 +45,6 @@ window.addEventListener('load', () => {
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
-    new Gem (
-        Math.floor(Math.random() * 120) - 60, // x
-        Math.floor(Math.random() * 120) - 60, // y
-    )
-    new Ore (
-        Math.floor(Math.random() * 120) - 60, // x
-        Math.floor(Math.random() * 120) - 60, // y
-    )
     game.worldbuilder.scatter(
         Miner,
         200, // radius
@@ -90,8 +67,19 @@ window.addEventListener('load', () => {
         Math.floor(Math.random() * 120) - 60, // y
     )
     game.trader = new Trader (
-        Math.floor(Math.random() * 70) - 45, // x
-        Math.floor(Math.random() * 70) - 45, // y
+        Math.floor(Math.random() * 20) - 10, // x
+        Math.floor(Math.random() * 20) - 10, // y
+    )
+    game.worldbuilder.scatter(
+      Trader,
+      300, // radius
+      1400, // rareness
+      Math.floor(Math.random() * 120) - 60, // x
+      Math.floor(Math.random() * 120) - 60, // y
+    )
+    game.gardener = new Gardener (
+        Math.floor(Math.random() * 20) - 10, // x
+        Math.floor(Math.random() * 20) - 10, // y
     )
     game.player = new CactusMerchant (0, 0)
     game.player.name = 'player'
@@ -103,7 +91,7 @@ window.addEventListener('load', () => {
     game.worldbuilder.clear(1, 1)
     game.drawGrid(game.player.pos)
     game.updateSidebar()
-})
+}
 
 window.addEventListener('keydown', event => {
     if (event.key === 'ArrowLeft') {
@@ -124,25 +112,30 @@ let Entity = function (x, y) {
 
 let Item = function (x, y) {
     this.instantiate(x, y)
+    this.value = 0
 }
 wheels.inherits(Item, Entity)
 
 let Person = function (x, y) {
     this.instantiate(x, y)
     this.name = 'person'
+    this.moveDelay = false
     this.inventory = []
     this.inventory.length = 8
     this.inventory.fill(null)
+    this.money = Math.floor(Math.random() * 7) + 2
 }
 wheels.inherits(Person, Entity)
 
 let CactusMerchant = function (x, y) {
     this.instantiate(x, y)
     this.name = 'person'
-    this.actions = ['get', 'harvest']
+    this.actions = ['get', 'harvest', 'trade']
     this.inventory = []
     this.inventory.length = 8
     this.inventory.fill(null)
+    this.money = Math.floor(Math.random() * 7) + 2
+    this.speed = 10
 }
 wheels.inherits(CactusMerchant, Person)
 
@@ -155,6 +148,16 @@ let Cactus = function (x, y) {
     this.verbs = ['harvest']
 }
 wheels.inherits(Cactus, Entity)
+
+let Shriveledcactus = function (x, y) {
+    this.instantiate(x, y)
+    this.icon = game.icons.shriveledcactus
+    this.name = 'shriveled cactus'
+    this.shriveled = true
+    this.info = `A near-dead dried up cactus.`
+    this.verbs = ['harvest']
+}
+wheels.inherits(Shriveledcactus, Cactus)
 
 let Rock = function (x, y) {
     this.instantiate(x, y)
@@ -180,6 +183,7 @@ let Key = function (x, y) {
     this.info = `It's a bent-up old key.`
     this.walkover = 'get'
     this.verbs = ['get']
+    this.value = 7
 }
 wheels.inherits(Key, Item)
 
@@ -187,11 +191,34 @@ let Gem = function (x, y) {
     this.instantiate(x, y)
     this.name = 'gem'
     this.icon = game.icons.gem
-    this.info = `It's a glimmering gemstone.`
+    this.info = `It's a bright shining gemstone.`
     this.walkover = 'get'
     this.verbs = ['get']
+    this.value = 70
 }
 wheels.inherits(Gem, Item)
+
+let Cactusseed = function (x, y) {
+    this.instantiate(x, y)
+    this.name = 'cactus seed'
+    this.icon = game.icons.cactusseed
+    this.info = `A small green seed.`
+    this.walkover = 'get'
+    this.verbs = ['get']
+    this.value = 3
+}
+wheels.inherits(Cactusseed, Item)
+
+let Poisonroot = function (x, y) {
+    this.instantiate(x, y)
+    this.name = 'poison root'
+    this.icon = game.icons.poisonroot
+    this.info = `A poisonous root.`
+    this.walkover = 'get'
+    this.verbs = ['get']
+    this.value = 35
+}
+wheels.inherits(Poisonroot, Item)
 
 let Ore = function (x, y) {
     this.instantiate(x, y)
@@ -200,6 +227,7 @@ let Ore = function (x, y) {
     this.info = `It's a lump of raw iron ore.`
     this.walkover = null
     this.verbs = ['get']
+    this.value = 15
 }
 wheels.inherits(Ore, Item)
 
@@ -210,6 +238,7 @@ let Skull = function (x, y) {
     this.info = `A human's skull.`
     this.walkover = null
     this.verbs = ['get']
+    this.value = 25
 }
 wheels.inherits(Skull, Item)
 
@@ -220,6 +249,7 @@ let Fruit = function (x, y) {
     this.info = `A sour watery cactus fruit.`
     this.walkover = 'get'
     this.verbs = ['get']
+    this.value = 20
 }
 wheels.inherits(Fruit, Item)
 
@@ -280,6 +310,9 @@ Person.prototype.drop = function (index) {
                     y: y,
                     x: x
                 }
+                if (this.inventory[index].drop) {
+                    this.inventory[index].drop(this)
+                }
                 this.inventory[index] = null
                 dropped = true
             }
@@ -289,6 +322,16 @@ Person.prototype.drop = function (index) {
     if (this === game.player) {
         game.updateSidebar()
     }
+}
+
+Person.prototype.inventoryIsFull = function () {
+    let full = true
+    this.inventory.forEach(item => {
+        if (!item) {
+            full = false
+        }
+    })
+    return full
 }
 
 game.worldbuilder.scatter = (Object, radius, rareness, x, y) => {
@@ -337,12 +380,24 @@ game.drawGrid = center => {
         relX++
         x++
     }
+    game.updateCompass()
+}
+
+game.updateCompass = () => {
+    game.needle = game.needle ? game.needle : document.getElementById('needle')
+    game.needle.style.transform = `rotate(${wheels.angleBetween(game.player.pos, {x: 0, y: 0})}deg)`
 }
 
 Entity.prototype.move = function (xMove, yMove) {
     let dir = {x: xMove, y: yMove}
+    if (this.moveDelay) {
+        this.mostRecentMove = dir
+        return false
+    }
+
     let x = this.pos.x
     let y = this.pos.y
+
     game.grid[x + dir.x] = game.grid[x + dir.x] ? game.grid[x + dir.x] : {}
     game.grid[x + dir.x][y + dir.y] = game.grid[x + dir.x][y + dir.y] ? game.grid[x + dir.x][y + dir.y] : new Square ()
     let entity = game.grid[x + dir.x][y + dir.y].entity
@@ -363,19 +418,59 @@ Entity.prototype.move = function (xMove, yMove) {
     }
     game.drawGrid(game.player.pos)
     if (this === game.player) {
+        this.moveDelay = true
+        setTimeout(function () {
+            this.moveDelay = false
+            if (this.mostRecentMove) {
+                this.move(this.mostRecentMove.x, this.mostRecentMove.y)
+                this.mostRecentMove = null
+            }
+        }.bind(this), this.speed * 20)
         game.updateSidebar()
     }
+    return true
 }
 
 Cactus.prototype.harvest = function (person) {
-    let fruit = new Fruit (this.pos.x, this.pos.y)
+    let Product = wheels.random([Fruit, Fruit, Fruit, Cactusseed])
+    if (this.shriveled) {
+        Product = Cactusseed
+    }
+    let fruit = new Product (this.pos.x, this.pos.y)
     if (person.addToInventory(fruit)) {
         game.grid[this.pos.x][this.pos.y].entity = null
+        let oldPos = {x: this.pos.x, y: this.pos.y}
         this.pos = null
         fruit.pos = null
+        if (this.shriveled && wheels.random([true, false])) {
+            let seed = new Product (oldPos.x, oldPos.y)
+            if (person.addToInventory(seed)) {
+                game.grid[oldPos.x][oldPos.y].entity = null
+                this.pos = null
+                seed.pos = null
+            }
+        }
     }
     game.drawGrid(game.player.pos)
     game.updateSidebar()
+}
+
+Cactusseed.prototype.drop = function (person) {
+    let wet = game.grid[this.pos.x][this.pos.y].moisture > .25
+    let sprout = () => {
+        if (wheels.random([true, false])) {
+            let cactus = new (wet ? Cactus : Shriveledcactus) (this.pos.x, this.pos.y)
+            game.grid[this.pos.x][this.pos.y].entity = cactus
+            this.pos = null
+            if (person === game.player) {
+                game.drawGrid(game.player.pos)
+                game.updateSidebar()
+            }
+        } else {
+            setTimeout(sprout, 5000)
+        }
+    }
+    setTimeout(sprout, 5000)
 }
 
 Rock.prototype.mine = function (person) {
@@ -397,8 +492,10 @@ Item.prototype.get = function (person) {
     if (person.addToInventory(this)) {
         game.grid[this.pos.x][this.pos.y].entity = null
         this.pos = null
-        game.drawGrid(game.player.pos)
-        game.updateSidebar()
+        if (person === game.player) {
+            game.drawGrid(game.player.pos)
+            game.updateSidebar()
+        }
     }
 }
 
@@ -417,8 +514,82 @@ Person.prototype.getAdjacents = function () {
     return adjacents
 }
 
+Person.prototype.trade = function (partner) {
+    if (partner === game.player) {
+        let objects = Array.from(document.getElementsByClassName('object'))
+        let characterPage = objects.filter(ob => {
+            return ob.getElementsByClassName('label')[0].innerText === this.name
+        })[0]
+        let shelf = document.getElementById('trading-shelf')
+        if (shelf) {
+            shelf.parentNode.removeChild(shelf)
+        }
+        shelf = document.createElement('div')
+        shelf.className = 'trading-shelf'
+        shelf.id = 'trading-shelf'
+        let buyshelf = document.createElement('div')
+        buyshelf.innerText = 'buy:'
+        let sellshelf = document.createElement('div')
+        sellshelf.innerText = 'sell:'
+
+        let addToShelf = (item, index, shelf, buying) => {
+            if (item) {
+                let button = document.createElement('div')
+                let icon = document.createElement('img')
+                let price = (item.value || item.value === 0) ? item.value : 1
+                let valid = (buying ? partner : this).money >= price
+                if ((!buying && this.inventoryIsFull()) || (buying && partner.inventoryIsFull())) {
+                    valid = false
+                }
+                icon.className = 'trading-icon'
+                icon.src = item.icon.src
+                button.className = `${valid ? 'button' : 'invalid-button'} trading-button`
+                button.innerText = `${price}₹`
+                button.appendChild(icon)
+                shelf.appendChild(button)
+                if (valid) {
+                    button.addEventListener('click', () => {
+                        if (buying) {
+                            partner.money -= price
+                            this.money += price
+                            partner.addToInventory(item)
+                            this.inventory[index] = null
+                        } else {
+                            this.money -= price
+                            partner.money += price
+                            this.addToInventory(item)
+                            partner.inventory[index] = null
+                        }
+                        game.drawGrid(game.player.pos)
+                        game.updateSidebar()
+                        this.trade(partner)
+                    })
+                }
+            }
+        }
+
+        this.inventory.forEach((item, index) => {
+            addToShelf(item, index, buyshelf, true)
+        })
+
+        partner.inventory.forEach((item, index) => {
+            addToShelf(item, index, sellshelf, false)
+        })
+
+        if (this.inventory.length) {
+            shelf.appendChild(buyshelf)
+        }
+        if (partner.inventory.length) {
+            shelf.appendChild(sellshelf)
+        }
+        characterPage.appendChild(shelf)
+    }
+}
+
 game.updateSidebar = () => {
     let inventory = document.getElementById('inventory')
+    let networth = document.getElementById('net-worth')
+    networth.innerText = `${game.player.money}₹`
     Array.from(inventory.childNodes).forEach(child => {
         inventory.removeChild(child)
     })
