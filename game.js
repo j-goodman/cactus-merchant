@@ -643,10 +643,10 @@ game.updateSidebar = () => {
         icon.src = ent.icon.src
         label.appendChild(icon)
         label.appendChild(name)
-        if (ent.money) {
-            networth.innerText = `${ent.money}₹`
-            label.appendChild(networth)
-        }
+        // if (ent.money) {
+        //     networth.innerText = `${ent.money}₹`
+        //     label.appendChild(networth)
+        // }
         object.appendChild(label)
 
         let button = document.createElement('div')
