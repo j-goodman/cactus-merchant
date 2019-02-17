@@ -66,21 +66,24 @@ let instantiateWorld = () => {
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
-    game.trader = new Trader (
-        Math.floor(Math.random() * 20) - 10, // x
-        Math.floor(Math.random() * 20) - 10, // y
-    )
     game.worldbuilder.scatter(
       Trader,
       300, // radius
-      1400, // rareness
+      1300, // rareness
       Math.floor(Math.random() * 120) - 60, // x
       Math.floor(Math.random() * 120) - 60, // y
     )
-    game.gardener = new Gardener (
-        Math.floor(Math.random() * 20) - 10, // x
-        Math.floor(Math.random() * 20) - 10, // y
+    game.worldbuilder.scatter(
+      Gardener,
+      300, // radius
+      1600, // rareness
+      Math.floor(Math.random() * 120) - 60, // x
+      Math.floor(Math.random() * 120) - 60, // y
     )
+    // game.gardener = new Gardener (
+    //     Math.floor(Math.random() * 20) - 10, // x
+    //     Math.floor(Math.random() * 20) - 10, // y
+    // )
     game.player = new CactusMerchant (0, 0)
     game.player.name = 'player'
     game.player.icon = document.getElementById('merchant')
