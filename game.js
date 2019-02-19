@@ -492,7 +492,7 @@ Flower.prototype.harvest = function (person) {
         let oldPos = {x: this.pos.x, y: this.pos.y}
         this.pos = null
         fruit.pos = null
-        if (this.shriveled && wheels.random([true, false])) {
+        if (wheels.random([true, false])) {
             let seed = new Product (oldPos.x, oldPos.y)
             if (person.addToInventory(seed)) {
                 game.grid[oldPos.x][oldPos.y].entity = null
