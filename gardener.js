@@ -6,9 +6,10 @@ let Gardener = function (x, y) {
     this.inventory = []
     this.inventory.length = 8
     this.inventory.fill(null)
-    this.inventory[0] = new (wheels.random([Fruit, Fruit, Cactusseed])) ()
-    this.inventory[1] = new (wheels.random([Fruit, Fruit, Cactusseed, Gem])) ()
-    this.inventory[2] = new (wheels.random([Cactusseed, Poisonroot])) ()
+    this.inventory[0] = new (wheels.random([Fruit, Flowerseed, Cactusseed])) ()
+    this.inventory[1] = new (wheels.random([Fruit, Flowerseed, Cactusseed, Gem])) ()
+    this.inventory[2] = new (wheels.random([Cactusseed, Poisonroot, Flowerseed])) ()
+    this.inventory[2] = new (wheels.random([Flowerseed, Flower])) ()
     this.info = `A gardener named ${this.name}.`
     this.money = Math.floor(Math.random() * 70) + 20
     this.verbs = ['trade']

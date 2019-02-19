@@ -5,6 +5,8 @@ window.addEventListener('load', () => {
 
     game.icons.cactus = document.getElementById('cactus')
     game.icons.cactusseed = document.getElementById('cactusseed')
+    game.icons.flower = document.getElementById('flower')
+    game.icons.flowerseed = document.getElementById('flowerseed')
     game.icons.fruit = document.getElementById('fruit')
     game.icons.gem = document.getElementById('gem')
     game.icons.herbseller = document.getElementById('herbseller')

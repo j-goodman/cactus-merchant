@@ -45,6 +45,10 @@ let instantiateWorld = () => {
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
+    new Flowerseed (
+        Math.floor(Math.random() * 120) - 60, // x
+        Math.floor(Math.random() * 120) - 60, // y
+    )
     game.worldbuilder.scatter(
         Miner,
         200, // radius
@@ -152,6 +156,17 @@ let Cactus = function (x, y) {
 }
 wheels.inherits(Cactus, Entity)
 
+let Flower = function (x, y) {
+    this.instantiate(x, y)
+    game.worldbuilder.waterGround(x, y)
+    this.icon = game.icons.flower
+    this.name = 'flower'
+    this.info = `A purple-and-green flower.`
+    this.verbs = ['get', 'harvest']
+    this.value = 30
+}
+wheels.inherits(Flower, Item)
+
 let Shriveledcactus = function (x, y) {
     this.instantiate(x, y)
     this.icon = game.icons.shriveledcactus
@@ -211,6 +226,17 @@ let Cactusseed = function (x, y) {
     this.value = 3
 }
 wheels.inherits(Cactusseed, Item)
+
+let Flowerseed = function (x, y) {
+    this.instantiate(x, y)
+    this.name = 'flower seed'
+    this.icon = game.icons.flowerseed
+    this.info = `A small flower seed.`
+    this.walkover = 'get'
+    this.verbs = ['get']
+    this.value = 5
+}
+wheels.inherits(Flowerseed, Item)
 
 let Poisonroot = function (x, y) {
     this.instantiate(x, y)
@@ -458,6 +484,27 @@ Cactus.prototype.harvest = function (person) {
     game.updateSidebar()
 }
 
+Flower.prototype.harvest = function (person) {
+    let Product = Flowerseed
+    let fruit = new Product (this.pos.x, this.pos.y)
+    if (person.addToInventory(fruit)) {
+        game.grid[this.pos.x][this.pos.y].entity = null
+        let oldPos = {x: this.pos.x, y: this.pos.y}
+        this.pos = null
+        fruit.pos = null
+        if (this.shriveled && wheels.random([true, false])) {
+            let seed = new Product (oldPos.x, oldPos.y)
+            if (person.addToInventory(seed)) {
+                game.grid[oldPos.x][oldPos.y].entity = null
+                this.pos = null
+                seed.pos = null
+            }
+        }
+    }
+    game.drawGrid(game.player.pos)
+    game.updateSidebar()
+}
+
 Cactusseed.prototype.drop = function (person) {
     let wet = game.grid[this.pos.x][this.pos.y].moisture > .25
     let sprout = () => {
@@ -466,6 +513,27 @@ Cactusseed.prototype.drop = function (person) {
             game.grid[this.pos.x][this.pos.y].entity = cactus
             this.pos = null
             game.drawGrid(game.player.pos)
+            if (person === game.player) {
+                game.updateSidebar()
+            }
+        } else {
+            setTimeout(sprout, 5000)
+        }
+    }
+    setTimeout(sprout, 5000)
+}
+
+Flowerseed.prototype.drop = function (person) {
+    let wet = game.grid[this.pos.x][this.pos.y].moisture > .25
+    let sprout = () => {
+        if (wheels.random([true, false])) {
+            let cactus = new (wet ? Flower : Flowerseed) (this.pos.x, this.pos.y)
+            game.grid[this.pos.x][this.pos.y].entity = cactus
+            this.pos = null
+            game.drawGrid(game.player.pos)
+            if (person === game.player) {
+                game.updateSidebar()
+            }
         } else {
             setTimeout(sprout, 5000)
         }

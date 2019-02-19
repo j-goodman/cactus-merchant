@@ -118,11 +118,11 @@ Talker.prototype.chooseCharDeterm = function (cell) {
 }
 
 var nameMumbler = new Talker (2);
-nameMumbler.names = ['Arturo', 'Malinche', 'Joseph', 'Annabel', 'Mikey', 'Abdi', 'Gaff', 'Olivia',
+nameMumbler.names = ['Arturo', 'Malinche', 'Joseph', 'Annabel', 'Abdi', 'Gaff', 'Olivia',
 										 'Farida', 'Santiago', 'Daniel', 'Valencia', 'Krishna', 'Louisa', 'Mohamed',
 									   'Nikau', 'Petra', 'Richard', 'Lazarus', 'Jack', 'Otis', 'William', 'Deshawn',
                      'Lou', 'Don', 'Mark', 'Kip', 'Hib', 'Ed', 'Bill', 'Ted', 'Shu', 'Lara', 'Knee',
-                     'Nibs', 'Danny', 'Bobby', 'Lee', 'Oppie', 'Axe', 'Ana', 'Anna']
+                     'Nibs', 'Danny', 'Bobby', 'Lee', 'Oppie', 'Axe', 'Anna']
 nameMumbler.names.map((item) => {
   nameMumbler.read(item)
 })
