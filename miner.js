@@ -1,7 +1,7 @@
 let Miner = function (x, y) {
     this.instantiate(x, y)
     this.name = nameMumbler.mumble()
-    this.icon = /*wheels.random([false, false, false, true]) ? game.icons.minerb :*/ game.icons.miner
+    this.icon = /*wheels.pick([false, false, false, true]) ? game.icons.minerb :*/ game.icons.miner
     this.head = {task: 'surveying', nearestRock: null}
     this.inventory = []
     this.inventory.length = 8
@@ -18,25 +18,25 @@ let Miner = function (x, y) {
 wheels.inherits(Miner, Person)
 
 Miner.prototype.act = function () {
-    if (this.head.task === 'traveling' && wheels.random([true, false, true])) {
+    if (this.head.task === 'traveling' && wheels.pick([true, false, true])) {
         this.moveOnBearing()
-        if (wheels.random([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,])) {
+        if (wheels.pick([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,])) {
             this.head.task = 'surveying'
         }
     }
     if (this.head.task === 'surveying') {
         let counts = this.survey()
         let oldBearing = this.head.bearing
-        this.head.bearing = wheels.random(['north-east', 'north-west', 'south-east', 'south-west'])
+        this.head.bearing = wheels.pick(['north-east', 'north-west', 'south-east', 'south-west'])
         let choice = 'traveling'
-        if (!this.head.highestEverRockCount || this.head.highestEverRockCount < counts.rock || (counts.rock > 0 && wheels.random([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))) {
+        if (!this.head.highestEverRockCount || this.head.highestEverRockCount < counts.rock || (counts.rock > 0 && wheels.pick([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))) {
             this.head.highestEverRockCount = counts.rock
             choice = 'mining'
         }
         if (!this.head.lowestEverRockCount || this.head.lowestEverRockCount > counts.rock) {
             this.head.lowestEverRockCount = counts.rock
             while (this.head.bearing === oldBearing) {
-                this.head.bearing = wheels.random(['north-east', 'north-west', 'south-east', 'south-west'])
+                this.head.bearing = wheels.pick(['north-east', 'north-west', 'south-east', 'south-west'])
             }
         }
         this.head.task = choice
@@ -51,10 +51,10 @@ Miner.prototype.act = function () {
         } else {
             if (!this.head.nearestRock || !this.head.nearestRock.pos || !game.grid[this.head.nearestRock.pos.x][this.head.nearestRock.pos.y].entity) {
                 this.survey()
-                if (!this.head.nearestRock || !this.head.nearestRock.pos || wheels.random([1, 0, 0, 0, 0, 0])) {
+                if (!this.head.nearestRock || !this.head.nearestRock.pos || wheels.pick([1, 0, 0, 0, 0, 0])) {
                     this.head.task = 'traveling'
                 }
-            } else if (wheels.random([true, false])) {
+            } else if (wheels.pick([true, false])) {
                 if (this.head.nearestRock.pos.x > this.pos.x) {
                     this.move(1, 0)
                 } else {
@@ -79,7 +79,7 @@ Miner.prototype.moveRandomly = function () {
         west: [-1, 0],
         north: [0, -1]
     }
-    let direction = wheels.random(directions)
+    let direction = wheels.pick(directions)
     this.move(direction[0], direction[1])
 }
 
@@ -95,7 +95,7 @@ Miner.prototype.moveOnBearing = function () {
         this.head.task = 'surveying'
     } else {
         while (!this.head.bearing.includes(direction)) {
-            direction = wheels.random(['north', 'south', 'east', 'west'])
+            direction = wheels.pick(['north', 'south', 'east', 'west'])
         }
         this.move(directions[direction][0], directions[direction][1])
     }

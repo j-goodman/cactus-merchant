@@ -6,9 +6,9 @@ let Trader = function (x, y) {
     this.inventory = []
     this.inventory.length = 8
     this.inventory.fill(null)
-    this.inventory[0] = new (wheels.random([Gem, Skull, Gem])) ()
-    this.inventory[1] = new (wheels.random([Fruit, Fruit, Fruit, Cactusseed, Skull, Gem])) ()
-    this.info = `A trader named ${this.name}. Traders in the great desert barter with scavengers and tradesmen for survival goods. They'll buy cactus fruits and other goods off of you or sell you items you might want.`
+    this.inventory[0] = new (wheels.pick([Gem, Skull, Gem])) ()
+    this.inventory[1] = new (wheels.pick([Fruit, Fruit, Fruit, Cactusseed, Skull, Gem])) ()
+    this.info = `A trader named ${this.name}.`
     this.interval = setInterval(this.act.bind(this), 500)
     this.money = Math.floor(Math.random() * 150) + 150
     this.verbs = ['trade']

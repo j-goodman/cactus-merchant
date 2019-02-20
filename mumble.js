@@ -118,15 +118,15 @@ Talker.prototype.chooseCharDeterm = function (cell) {
 }
 
 var nameMumbler = new Talker (2);
-nameMumbler.names = ['Arturo', 'Malinche', 'Joseph', 'Annabel', 'Abdi', 'Gaff', 'Olivia',
+nameMumbler.names = ['Arturo', 'Malinche', 'Joseph', 'Emily', 'Abdi', 'Gaff', 'Olivia',
 										 'Farida', 'Santiago', 'Daniel', 'Valencia', 'Krishna', 'Louisa', 'Mohamed',
 									   'Nikau', 'Petra', 'Richard', 'Lazarus', 'Jack', 'Otis', 'William', 'Deshawn',
-                     'Lou', 'Don', 'Mark', 'Kip', 'Hib', 'Ed', 'Bill', 'Ted', 'Shu', 'Lara', 'Knee',
-                     'Nibs', 'Danny', 'Bobby', 'Lee', 'Oppie', 'Axe', 'Anna']
+                     'Lou', 'Don', 'Mark', 'Kip', 'Hib', 'Eph', 'Bill', 'Ted', 'Shu', 'Lara', 'Knee',
+                     'Nibs', 'Danny', 'Bobby', 'Lee', 'Oppie', 'Axe', 'Irma']
 nameMumbler.names.map((item) => {
   nameMumbler.read(item)
 })
 
 nameMumbler.mumble = () => {
-  return nameMumbler.write(wheels.random(nameMumbler.names));
+  return nameMumbler.write(wheels.pick(nameMumbler.names));
 }

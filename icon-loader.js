@@ -4,6 +4,7 @@ window.addEventListener('load', () => {
     game.ctx = game.canvas.getContext('2d')
 
     game.icons.cactus = document.getElementById('cactus')
+    game.icons.cactuscurse = document.getElementById('cactuscurse')
     game.icons.cactusseed = document.getElementById('cactusseed')
     game.icons.flower = document.getElementById('flower')
     game.icons.flowerseed = document.getElementById('flowerseed')

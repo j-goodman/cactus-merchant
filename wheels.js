@@ -18,11 +18,11 @@ wheels.distanceBetween = (first, second) => {
     return Math.sqrt(a * a + b * b)
 }
 
-wheels.random = list => {
+wheels.pick = list => {
     if (Array.isArray(list)) {
         return list[Math.floor(Math.random() * list.length)]
     } else if (Object.keys(list)) {
-        return list[wheels.random(Object.keys(list))]
+        return list[wheels.pick(Object.keys(list))]
     }
 }
 
