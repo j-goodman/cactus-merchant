@@ -75,14 +75,14 @@ let instantiateWorld = () => {
     game.worldbuilder.scatter(
         Trader,
         300, // radius
-        1300, // rareness
+        900, // rareness
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
     game.worldbuilder.scatter(
         Gardener,
         300, // radius
-        1600, // rareness
+        1200, // rareness
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
@@ -150,7 +150,7 @@ let CactusMerchant = function (x, y) {
     this.inventory.length = 8
     this.inventory.fill(null)
     this.money = Math.floor(Math.random() * 7) + 2
-    this.speed = 8
+    this.speed = 6
 }
 wheels.inherits(CactusMerchant, Person)
 
