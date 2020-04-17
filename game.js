@@ -53,8 +53,8 @@ let instantiateWorld = () => {
     // )
     game.worldbuilder.scatter(
         Miner,
-        200, // radius
-        1400, // rareness
+        400, // radius
+        1100, // rareness
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
@@ -74,15 +74,15 @@ let instantiateWorld = () => {
     )
     game.worldbuilder.scatter(
         Trader,
-        300, // radius
-        900, // rareness
+        500, // radius
+        500, // rareness
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
     game.worldbuilder.scatter(
         Gardener,
         300, // radius
-        1200, // rareness
+        1100, // rareness
         Math.floor(Math.random() * 120) - 60, // x
         Math.floor(Math.random() * 120) - 60, // y
     )
